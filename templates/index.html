@@ -9,7 +9,7 @@
 
             <div class="form-group col-md-6">
                 <textarea name="textarea" class="form-control" rows="5" style="font-size: 20pt;"
-                    placeholder="Input..."></textarea>
+                    placeholder="Input...">{{ sentence }}</textarea>
             </div>
 
         </div>
@@ -32,15 +32,16 @@
                         <input type="radio" name="output_selection">
                     </div>
                 </div>
-                <textarea class="form-control" aria-label="With textarea" style="resize: none; background-color: white;"
-                    readonly>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Non nulla amet, vitae est unde cum sed. Tempora est dolor consectetur optio hic dolore magnam iure porro. Eum officia velit placeat.</textarea>
+                <textarea class="form-control" aria-label="With textarea" style="resize: none; background-color: white;" rows="2"
+                    readonly>{{ hyp }}</textarea>
             </div>
             {% endfor %}
-
         </ul>
-
     </div>
 
-{% endif %}
+    <!-- <div class="text-center">
+        <img src="../static/attention_map.png" class="img-fluid" style="position: relative; top: 50px;">
+    </div> -->
+    {% endif %}
 
 {% endblock %}
