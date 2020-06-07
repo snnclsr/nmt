@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h1 class="text-center">Turkish to English Neural Machine Translation</h1>
+
+    <form action="{{ url_for('translate') }}" method="post">
+
+        <div class="row justify-content-md-center">
+
+            <div class="form-group col-md-6">
+                <textarea name="textarea" class="form-control" rows="5" style="font-size: 20pt;"
+                    placeholder="Input..."></textarea>
+            </div>
+
+        </div>
+
+        <div class="p-3 mb-4">
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Translate</button>
+            </div>
+        </div>
+
+    </form>
+
+    {% if hypothesis %}
+    <div class="container">
+        <ul class="list-group">
+            {% for hyp in hypothesis %}
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="radio" name="output_selection">
+                    </div>
+                </div>
+                <textarea class="form-control" aria-label="With textarea" style="resize: none; background-color: white;"
+                    readonly>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Non nulla amet, vitae est unde cum sed. Tempora est dolor consectetur optio hic dolore magnam iure porro. Eum officia velit placeat.</textarea>
+            </div>
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+{% endif %}
+
+{% endblock %}

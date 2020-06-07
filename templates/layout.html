@@ -1,0 +1,33 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+</head>
+    <body>
+
+        <main>
+            <section class="section">
+                <div class="content">
+                    {% block content %} {% endblock %}
+                </div>
+            </section>        
+        </main>
+
+<!-- 
+        <footer class="footer">
+            <div class="container">
+                <div class="row justify-content-md-center">
+                    <a href="https://github.com/snnclsr" class="fa fa-github"> snnclsr</a>
+                </div>
+                <div class="row justify-content-md-center">
+                    <a href="https://twitter.com/snnclsr" class="fa fa-twitter"> snnclsr</a>
+                </div>
+            </div>
+        </footer> -->
+    </body>
+</html>
