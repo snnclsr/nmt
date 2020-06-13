@@ -22,7 +22,7 @@
         function swapImage(event) {
             if (event.srcElement.checked) {
                 var d = new Date();
-                document.getElementById("attention_img").src = "static/" + event.srcElement.id + ".png"; // ?ver=' + d.getTime()
+                document.getElementById("attention_img").src = "static/" + event.srcElement.id + ".png" + "?ver=" + d.getTime(); 
             }
         }
     </script>
