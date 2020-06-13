@@ -2,7 +2,7 @@ import pickle
 
 from config import HOST, PORT, DEBUG, MODEL_PATH
 from flask import Flask, render_template, request
-from utils import to_tensor
+from utils import to_tensor, generate_attention_map, show_attention
 from models import Seq2Seq
 from test import beam_search
 from vocab import Vocab
@@ -33,6 +33,7 @@ def translate():
     print(args)
     text_input = args["textarea"]
 
+    # Otelimizin karşısındaki dükkanda gördüğüm bir elbiseyi denemek isterim.
     print("Input: ", text_input)
     tokenized_sent = tokenizer.tokenize(text_input)
     print("Tokenized input: ", tokenized_sent)
@@ -42,21 +43,23 @@ def translate():
 
     model = Seq2Seq.load(MODEL_PATH)
     model.device = "cpu"
-    hypothesis = beam_search(model, [tokenized_sent], beam_size=3, max_decoding_time_step=70)
-
-    hypothesis = hypothesis[0]
-    result_hypothesis = []
-    for hyp in hypothesis:
-        result_hypothesis.append(" ".join(hyp[0]))
-
-    print(result_hypothesis)
-
+    hypothesis = beam_search(model, [tokenized_sent], beam_size=3, max_decoding_time_step=70)[0]
+    # print("Hypothesis")
     # print(hypothesis)
-    # result_hypothesis = [
-    #     "123",
-    #     "345",
-    #     "678"
-    # ]
+
+    for i in range(3):
+        new_target = [['<sos>'] + hypothesis[i].value + ['<eos>']]
+        a_ts = generate_attention_map(model, vocabs, [tokenized_sent], new_target)
+        show_attention(tokenized_sent, hypothesis[i].value, 
+                        [a[0].detach().cpu().numpy() for a in a_ts[:len(hypothesis[i].value)]], 
+                        save_path="static/list_{}.png".format(i))
+
+    result_hypothesis = []
+    for idx, hyp in enumerate(hypothesis):
+        result_hypothesis.append((idx, " ".join(hyp.value)))
+
+    # print(result_hypothesis)
+
     return render_template("index.html", hypothesis=result_hypothesis, sentence=text_input)
 
 

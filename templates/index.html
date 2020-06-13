@@ -25,11 +25,11 @@
     {% if hypothesis %}
     <div class="container">
         <ul class="list-group">
-            {% for hyp in hypothesis %}
+            {% for idx, hyp in hypothesis %}
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text">
-                        <input type="radio" name="output_selection">
+                        <input type="radio" name="output_selection" onchange="swapImage(event)" id="list_{{ idx }}">
                     </div>
                 </div>
                 <textarea class="form-control" aria-label="With textarea" style="resize: none; background-color: white;" rows="2"
@@ -39,9 +39,9 @@
         </ul>
     </div>
 
-    <!-- <div class="text-center">
-        <img src="../static/attention_map.png" class="img-fluid" style="position: relative; top: 50px;">
-    </div> -->
+    <div class="text-center">
+        <img src="../static/list_0.png" class="img-fluid" style="position: relative; top: 50px;" id="attention_img">
+    </div>
     {% endif %}
 
 {% endblock %}
