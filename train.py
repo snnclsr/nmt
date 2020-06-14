@@ -251,7 +251,7 @@ def main():
 
     vocabs = Vocabularies(src_vocab, tgt_vocab)
     
-    with open("vocabs.pkl", "wb") as f:
+    with open(current_experiment_dir / "vocabs.pkl", "wb") as f:
         pickle.dump(vocabs, f)
 
     logger.info("Total words in the source language: {}".format(len(src_vocab)))
