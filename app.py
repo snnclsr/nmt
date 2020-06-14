@@ -33,7 +33,6 @@ def translate():
     print(args)
     text_input = args["textarea"]
 
-    # Otelimizin karşısındaki dükkanda gördüğüm bir elbiseyi denemek isterim.
     print("Input: ", text_input)
     tokenized_sent = tokenizer.tokenize(text_input)
     print("Tokenized input: ", tokenized_sent)
@@ -43,9 +42,10 @@ def translate():
 
     model = Seq2Seq.load(MODEL_PATH)
     model.device = "cpu"
+
     hypothesis = beam_search(model, [tokenized_sent], beam_size=3, max_decoding_time_step=70)[0]
-    # print("Hypothesis")
-    # print(hypothesis)
+    print("Hypothesis")
+    print(hypothesis)
 
     for i in range(3):
         new_target = [['<sos>'] + hypothesis[i].value + ['<eos>']]
@@ -57,8 +57,6 @@ def translate():
     result_hypothesis = []
     for idx, hyp in enumerate(hypothesis):
         result_hypothesis.append((idx, " ".join(hyp.value)))
-
-    # print(result_hypothesis)
 
     return render_template("index.html", hypothesis=result_hypothesis, sentence=text_input)
 

@@ -94,6 +94,8 @@ class Decoder(nn.Module):
     
         combined_outputs = torch.stack(combined_outputs, dim=0)
         probs = F.log_softmax(self.vocab_projection(combined_outputs), dim=-1)
+        # Memory cleanup
+        del Y
         return probs
         
     def step(self, decoder_input, decoder_state, encoder_hiddens, 
@@ -121,6 +123,8 @@ class Decoder(nn.Module):
         u_t = torch.cat([a_t, new_decoder_hidden], dim=1) # (2, 3*h_s)
         v_t = self.combined_output_projection(u_t) # (2, h_s)
         o_t = self.dropout(torch.tanh(v_t)) # (2, h_s)
+        # Memory cleanup
+        del a_t, u_t, v_t
         return new_decoder_state, o_t, a_t_probs
         
         

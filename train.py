@@ -271,8 +271,6 @@ def main():
             p.data.uniform_(-args["uniform_init"], args["uniform_init"])
 
     optimizer = optim.Adam(model.parameters(), lr=args["initial_lr"])
-    # train_data = train_data[:100]
-    # valid_data = valid_data[:100]
  
     args["model_save_path"] = str(current_experiment_dir / args["model_name"])
     train(model, optimizer, train_data, valid_data, args)
