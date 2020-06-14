@@ -45,8 +45,7 @@ class Encoder(nn.Module):
         initial_decoder_hidden = self.h_projection(h_n)
         initial_decoder_cell = self.c_projection(c_n)
         
-        initial_decoder_state = (initial_decoder_hidden, initial_decoder_cell)
-        return hidden_outs, initial_decoder_state
+        return hidden_outs, (initial_decoder_hidden, initial_decoder_cell)
 
         
 class Decoder(nn.Module):
@@ -89,7 +88,7 @@ class Decoder(nn.Module):
         for y_t in torch.split(Y, 1):
             y_t = y_t.squeeze(dim=0) # (1, bs, embedding_dim) -> (bs, embedding_dim)
             y_t = torch.cat((y_t, o_prev), dim=1) # (bs, embedding_dim + hs)
-            dec_state, o_t, a_t_probs = self.step(y_t, dec_state, enc_hiddens, enc_hidden_projections, enc_masks)
+            dec_state, o_t, _ = self.step(y_t, dec_state, enc_hiddens, enc_hidden_projections, enc_masks)
             combined_outputs.append(o_t)
             o_prev = o_t
     
