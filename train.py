@@ -86,12 +86,12 @@ def train(model, optimizer, train_data, valid_data, args):
     clip_grad = args["clip_grad"]
     model_save_path = args["model_save_path"]
     lr_decay = args["lr_decay"]
-    num_trial = args["num_trial"]
     epoch_patience = args["patience"]
     max_trial = args["max_trial"]
     device = args["device"]
     hist_valid_scores = []
     epoch_counter = 0
+    num_trial = 0
 
     while epoch_counter < n_epochs:
 
@@ -177,26 +177,29 @@ def main():
     arg_parser.add_argument("--embedding_dim", type=int, default=64,
                             help="Embedding dimension for the word embeddings")
     arg_parser.add_argument("--hidden_size", type=int, default=64,
-                            help="")
+                            help="RNN hidden dimension")
     arg_parser.add_argument("--num_layers", type=int, default=1, 
-                            help="")
+                            help="Number of RNN Layers")
     arg_parser.add_argument("--bidirectional", action="store_true", 
-                            help="")
+                            help="Whether or not bidirectional RNNs")
     arg_parser.add_argument("--dropout_p", type=float, default=0.1, 
-                            help="")
+                            help="Dropout probability for word embeddings and Decoder networks output")
     arg_parser.add_argument("--initial_lr", type=float, default=0.001, 
-                            help="")
+                            help="Initial learning rate for the optimizer")
     arg_parser.add_argument("--uniform_init", type=float, default=0.0, 
-                            help="")
+                            help="Uniformly initialization of the model's parameter")
     arg_parser.add_argument("--clip_grad", type=float, default=5.0, 
                             help="Gradient clipping value to be applied to the model")
-    arg_parser.add_argument("--lr_decay", type=float, default=0.5, help="")
-    arg_parser.add_argument("--patience", type=int, default=5, help="")
-    arg_parser.add_argument("--num_trial", type=int, default=5, help="")
-    arg_parser.add_argument("--max_trial", type=int, default=5, help="")
+    arg_parser.add_argument("--lr_decay", type=float, default=0.5, 
+                            help="Learning rate decay if the validation metric doesn't improve")
+    arg_parser.add_argument("--patience", type=int, default=5, 
+                            help="Learning rate decay patience")
+    arg_parser.add_argument("--max_trial", type=int, default=5, 
+                            help="Maximum number of trials for early stopping")
     arg_parser.add_argument("--device", type=str, default="cpu", 
                             help="Device to run the model")
-    arg_parser.add_argument("--model_name", type=str, default="model.bin", help="")
+    arg_parser.add_argument("--model_name", type=str, default="model.bin", 
+                            help="Model name")
     args = arg_parser.parse_args()
     args = vars(args)
     print(args)
