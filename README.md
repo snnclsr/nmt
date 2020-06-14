@@ -65,6 +65,28 @@ Sample usage:
 python train.py --train_data train.tr train.en --valid_data valid.tr valid.en --n_epochs 30 --batch_size 32 --embedding_dim 256 --hidden_size 256 --num_layers 2 --bidirectional --dropout_p 0.3 --device cuda
 ```
 
+# Test
+
+To compute the corpus level blue score.
+
+```
+usage: test.py [-h] --model_file MODEL_FILE --valid_data VALID_DATA
+               [VALID_DATA ...]
+
+Neural Machine Translation Testing
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --model_file MODEL_FILE
+                        Model File
+  --valid_data VALID_DATA [VALID_DATA ...]
+                        Validation_data
+
+
+Sample Usage:
+python test.py --model_file model.bin --validation_data valid.tr valid.en
+```
+
 # Flask App
 
 For running the application locally, run:
