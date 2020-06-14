@@ -10,7 +10,7 @@ from collections import namedtuple
 from typing import List, Tuple
 
 from utils import read_text, add_start_end_tokens, batch_iter
-from vocab import Vocab
+from vocab import Vocab, Vocabularies
 from models import Seq2Seq
 
 from tqdm import tqdm
@@ -28,7 +28,6 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-Vocabularies = namedtuple("Vocabularies", "src tgt")
 EXPERIMENTS_DIR = Path("experiments")
 
 
@@ -78,9 +77,6 @@ def evaluate_ppl(model, dev_data, batch_size=32):
 def train(model, optimizer, train_data, valid_data, args):
 
     batch_size = args["batch_size"]
-
-    data_len = len(train_data)
-    epoch_iteration = data_len // batch_size
 
     n_epochs = args["n_epochs"]
     clip_grad = args["clip_grad"]
