@@ -7,7 +7,7 @@ This repository implements a Turkish to English Neural Machine Translation syste
 
 # Dataset
 
-The dataset for this project is taken from [here](http://opus.nlpl.eu/). I have used the [Tatoeba](http://opus.nlpl.eu/Tatoeba-v20190709.php) corpus. I have deleted some of the duplicates found in the data. But there are some examples left since there can be multiple translations for the same sentence.
+The dataset for this project is taken from [here](http://opus.nlpl.eu/). I have used the [Tatoeba](http://opus.nlpl.eu/Tatoeba-v20190709.php) corpus. I have deleted some of the duplicates found in the data. But there are some examples left since there can be multiple translations for the same sentence. I also pretokenized the dataset. Finalized version can be found in [data](https://github.com/snnclsr/nmt/tree/master/tr_en_data) folder.
 
 ### Tokenization
 
