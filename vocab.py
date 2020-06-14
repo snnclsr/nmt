@@ -1,3 +1,7 @@
+from collections import namedtuple
+
+Vocabularies = namedtuple("Vocabularies", "src tgt")
+
 class Vocab:
     
     def __init__(self, sents):

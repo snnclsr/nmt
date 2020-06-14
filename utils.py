@@ -1,6 +1,9 @@
 import math
 from typing import List, Tuple
 
+from tqdm import tqdm
+from nltk.translate.bleu_score import corpus_bleu, sentence_bleu, SmoothingFunction
+
 import numpy as np
 import torch
 
@@ -79,11 +82,11 @@ def batch_iter(data, batch_size, shuffle=False):
 
 
 
-def show_attention(src, pred, attention_weights, save_path="attention_map.png"):
+def save_attention(src, pred, attention_weights, save_path="attention_map.png"):
     fig = plt.figure(figsize=(12, 6))
     ax = fig.add_subplot(111)
     attention_weights = np.array(attention_weights).transpose()
-    cax = ax.matshow(attention_weights, cmap='bone')
+    ax.matshow(attention_weights, cmap='bone')
     ax.set_xticklabels([''] + pred, rotation=90)
     ax.set_yticklabels([''] + src)
     
@@ -133,3 +136,30 @@ def generate_attention_map(model, vocabs, test_src, test_tgt):
         o_prev = o_t
 
     return a_ts
+
+
+def beam_search(model, test_data, beam_size, max_decoding_time_step):
+  
+    model.eval()
+    hypotheses = []
+
+    with torch.no_grad():
+        for sent in tqdm(test_data):
+            hyp = model.beam_search(sent, beam_size, max_decoding_time_step)
+            hypotheses.append(hyp)
+
+    return hypotheses
+
+
+def compute_corpus_level_bleu_score(references, hypotheses) -> float:
+    """ Given decoding results and reference sentences, compute corpus-level BLEU score.
+    @param references (List[List[str]]): a list of gold-standard reference target sentences
+    @param hypotheses (List[Hypothesis]): a list of hypotheses, one for each reference
+    @returns bleu_score: corpus-level BLEU score
+    """
+    if references[0][0] == '<sos>':
+        references = [ref[1:-1] for ref in references]
+    bleu_score = corpus_bleu([[ref] for ref in references],
+                             [hyp.value for hyp in hypotheses])
+    return bleu_score
+

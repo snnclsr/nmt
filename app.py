@@ -2,11 +2,9 @@ import pickle
 
 from config import HOST, PORT, DEBUG, MODEL_PATH
 from flask import Flask, render_template, request
-from utils import to_tensor, generate_attention_map, show_attention
+from utils import to_tensor, generate_attention_map, save_attention, beam_search
 from models import Seq2Seq
-from test import beam_search
-from vocab import Vocab
-from train import Vocabularies
+from vocab import Vocab, Vocabularies
 
 from nltk.tokenize import RegexpTokenizer
 
@@ -50,7 +48,7 @@ def translate():
     for i in range(3):
         new_target = [['<sos>'] + hypothesis[i].value + ['<eos>']]
         a_ts = generate_attention_map(model, vocabs, [tokenized_sent], new_target)
-        show_attention(tokenized_sent, hypothesis[i].value, 
+        save_attention(tokenized_sent, hypothesis[i].value, 
                         [a[0].detach().cpu().numpy() for a in a_ts[:len(hypothesis[i].value)]], 
                         save_path="static/list_{}.png".format(i))
 
