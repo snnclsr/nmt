@@ -1,6 +1,6 @@
 # Neural Machine Translation
 
-This repository implements a Turkish to English Neural Machine Translation system using Seq2Seq + Global Attention model.
+This repository implements a Turkish to English Neural Machine Translation system using Seq2Seq + Global Attention model. There is also a [Flask](https://github.com/snnclsr/nmt#flask-app) application that you can run locally. You can enter the text, translate and, inspect the results as well as the attention visualization. We run beam search with beam size 3 in the background and return the most probable sequences sorted by their relative score.
 
 # Examples
 ![NMT Image](images/nmt_example.png)
