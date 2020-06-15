@@ -97,6 +97,9 @@ python app.py
 
 Make sure that your model paths in the `config.py` file is properly defined.
 
+* [Model file](https://drive.google.com/file/d/1fc6aoBsrrjvMGwWnPaY6DeKgdqy2BkOz/view?usp=sharing)
+* [Vocab file](https://drive.google.com/file/d/1_8_D_dc7Qip0gYi4L4JBnoIlH0wPibti/view?usp=sharing)
+
 # Improvements
 
 * Using subword units (for both Turkish and English)
