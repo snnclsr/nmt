@@ -18,6 +18,7 @@ def read_text(filename: str) -> List[str]:
         
     return data
 
+
 def add_start_end_tokens(dataset: List[Tuple[str, str]]) -> Tuple[List[List[str]], List[List[str]]]:
 
     src_data = []
@@ -97,6 +98,10 @@ def save_attention(src, pred, attention_weights, save_path="attention_map.png"):
 
 
 def generate_attention_map(model, vocabs, test_src, test_tgt):
+    """
+    This function is actually the decoding step of the Seq2Seq model.
+    We only use the attention weights.
+    """
 
     examples = list(zip(test_src, test_tgt))
 
@@ -111,7 +116,6 @@ def generate_attention_map(model, vocabs, test_src, test_tgt):
     enc_hiddens, dec_init_state = model.encoder(src_tensor, source_lengths)
     enc_hiddens_proj = model.decoder.attn_projection(enc_hiddens)
 
-    # (2) Get the target sentence embeddings.
     Y = model.decoder.embedding(tgt_tensor)
 
     dec_state = dec_init_state
@@ -119,20 +123,14 @@ def generate_attention_map(model, vocabs, test_src, test_tgt):
     o_prev = torch.zeros(batch_size, model.decoder.hidden_size, device=device)
     enc_masks = generate_sent_masks(enc_hiddens, source_lengths, device=device)
 
-    # (3) Sequentially for every single word (embedding)
     a_ts = []
     combined_outputs = []
     for y_t in torch.split(Y, 1, dim=0):
-        # Get rid of the batch dimension which is 1.
         y_t = y_t.squeeze(dim=0)
-        # Concatenate the current word embedding with the previous output
-        # vector.
         ybar_t = torch.cat((y_t, o_prev), dim=1)
-        # STEP
         dec_state, o_t, a_t = model.decoder.step(ybar_t, dec_state, enc_hiddens, enc_hiddens_proj, enc_masks)
         a_ts.append(a_t)
         combined_outputs.append(o_t)
-        # Assign current output vector to prev for the next iteration.
         o_prev = o_t
 
     return a_ts
@@ -152,10 +150,8 @@ def beam_search(model, test_data, beam_size, max_decoding_time_step):
 
 
 def compute_corpus_level_bleu_score(references, hypotheses) -> float:
-    """ Given decoding results and reference sentences, compute corpus-level BLEU score.
-    @param references (List[List[str]]): a list of gold-standard reference target sentences
-    @param hypotheses (List[Hypothesis]): a list of hypotheses, one for each reference
-    @returns bleu_score: corpus-level BLEU score
+    """ 
+    Given decoding results and reference sentences, compute corpus-level BLEU score.
     """
     if references[0][0] == '<sos>':
         references = [ref[1:-1] for ref in references]
