@@ -101,6 +101,8 @@ def generate_attention_map(model, vocabs, test_src, test_tgt):
     """
     This function is actually the decoding step of the Seq2Seq model.
     We only use the attention weights.
+    TODO: add this functionality to the beam search as a parameter
+    since it already does the decoding step in itself (duplicate code for now).
     """
 
     examples = list(zip(test_src, test_tgt))
