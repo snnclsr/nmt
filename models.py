@@ -166,13 +166,11 @@ class Seq2Seq(nn.Module):
         return scores
 
     def beam_search(self, src_sent, beam_size=5, max_decoding_time_step=70):
-        """ Given a single source sentence, perform beam search, yielding translations in the target language.
-        @param src_sent (List[str]): a single source sentence (words)
-        @param beam_size (int): beam size
-        @param max_decoding_time_step (int): maximum number of time steps to unroll the decoding RNN
-        @returns hypotheses (List[Hypothesis]): a list of hypothesis, each hypothesis has two fields:
-                value: List[str]: the decoded target sentence, represented as a list of words
-                score: float: the log-likelihood of the target sentence
+        """ 
+        Given a single source sentence, perform beam search, yielding translations in the target language.
+        src_sent: a single source sentence (words)
+        beam_size: beam size
+        max_decoding_time_step: maximum number of time steps to unroll the decoding RNN
         """
         src_sents_var = to_tensor(self.vocabs.src, [src_sent], device=self.device)
 
@@ -182,9 +180,7 @@ class Seq2Seq(nn.Module):
         h_tm1 = dec_init_vec
         att_tm1 = torch.zeros(1, self.decoder.hidden_size, device=self.device)
 
-        eos_id = self.vocabs.tgt.eos_idx
-
-        hypotheses = [['<sos>']]
+        hypotheses = [[self.vocabs.tgt.sos_idx]]
         hyp_scores = torch.zeros(len(hypotheses), dtype=torch.float, device=self.device)
         completed_hypotheses = []
 
@@ -206,8 +202,6 @@ class Seq2Seq(nn.Module):
 
             x = torch.cat([y_t_embed, att_tm1], dim=-1)
 
-            # def step(self, decoder_input, decoder_state, encoder_hiddens, 
-            #          encoder_hiddens_projection, encoder_masks):
             (h_t, cell_t), att_t, _ = self.decoder.step(x, h_tm1,
                                                 exp_src_encodings, exp_src_encodings_att_linear, encoder_masks=None)
 
@@ -232,7 +226,7 @@ class Seq2Seq(nn.Module):
 
                 hyp_word = self.vocabs.tgt.i2w[hyp_word_id]
                 new_hyp_sent = hypotheses[prev_hyp_id] + [hyp_word]
-                if hyp_word == '<eos>':
+                if hyp_word == self.vocabs.tgt.eos_idx:
                     completed_hypotheses.append(Hypothesis(value=new_hyp_sent[1:-1],
                                                            score=cand_new_hyp_score))
                 else:
