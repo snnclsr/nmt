@@ -180,7 +180,7 @@ class Seq2Seq(nn.Module):
         h_tm1 = dec_init_vec
         att_tm1 = torch.zeros(1, self.decoder.hidden_size, device=self.device)
 
-        hypotheses = [[self.vocabs.tgt.sos_idx]]
+        hypotheses = [["<sos>"]]
         hyp_scores = torch.zeros(len(hypotheses), dtype=torch.float, device=self.device)
         completed_hypotheses = []
 
@@ -226,7 +226,7 @@ class Seq2Seq(nn.Module):
 
                 hyp_word = self.vocabs.tgt.i2w[hyp_word_id]
                 new_hyp_sent = hypotheses[prev_hyp_id] + [hyp_word]
-                if hyp_word == self.vocabs.tgt.eos_idx:
+                if hyp_word == "<eos>":
                     completed_hypotheses.append(Hypothesis(value=new_hyp_sent[1:-1],
                                                            score=cand_new_hyp_score))
                 else:
