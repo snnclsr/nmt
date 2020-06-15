@@ -1,6 +1,6 @@
 import pickle
 
-from config import HOST, PORT, DEBUG, MODEL_PATH
+from config import HOST, PORT, DEBUG, MODEL_PATH, VOCAB_FILE
 from flask import Flask, render_template, request
 from utils import to_tensor, generate_attention_map, save_attention, beam_search
 from models import Seq2Seq
@@ -35,7 +35,7 @@ def translate():
     tokenized_sent = tokenizer.tokenize(text_input)
     print("Tokenized input: ", tokenized_sent)
 
-    with open("vocabs.pkl", "rb") as f:
+    with open(VOCAB_FILE, "rb") as f:
         vocabs = pickle.load(f)
 
     model = Seq2Seq.load(MODEL_PATH)
