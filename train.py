@@ -43,12 +43,12 @@ def print_random_samples(data: List[Tuple[str, str]], n: int=5):
         print("="*50)
 
 
-def evaluate_ppl(model, dev_data, batch_size=32):
-    """ Evaluate perplexity on dev sentences
-    @param model (NMT): NMT Model
-    @param dev_data (list of (src_sent, tgt_sent)): list of tuples containing source and target sentence
-    @param batch_size (batch size)
-    @returns ppl (perplixty on dev sentences)
+def evaluate_ppl(model, valid_data, batch_size=32):
+    """ 
+    Evaluate the perplexity on valid sentences
+    model: Seq2Seq Model
+    valid_data: list of tuples containing source and target sentence
+    batch_size: batch size
     """
     was_training = model.training
     model.eval()
@@ -62,12 +62,11 @@ def evaluate_ppl(model, dev_data, batch_size=32):
             loss = -model(src_sents, tgt_sents).sum()
 
             cum_loss += float(loss)
-            tgt_word_num_to_predict = sum(len(s[1:]) for s in tgt_sents)  # omitting leading `<s>`
+            tgt_word_num_to_predict = sum(len(s[1:]) for s in tgt_sents)
             cum_tgt_words += tgt_word_num_to_predict
 
         ppl = np.exp(cum_loss / cum_tgt_words)
         
-
     if was_training:
         model.train()
 
@@ -111,7 +110,7 @@ def train(model, optimizer, train_data, valid_data, args):
         model.eval()
         with torch.no_grad():
 
-            # compute dev. ppl and bleu
+            # compute validation perplexity
             dev_ppl = evaluate_ppl(model, valid_data, batch_size=128)
             valid_metric = -dev_ppl
 
@@ -131,16 +130,17 @@ def train(model, optimizer, train_data, valid_data, args):
                     num_trial += 1
 
                     if num_trial == max_trial:
-                        print("Early Stopping hit.")
+                        logger.info("Early Stopping hit.")
                         break
 
                     # Decaying the learning rate.
                     lr = optimizer.param_groups[0]['lr'] * lr_decay
                     logger.info("Loading the previous best model. Decayed the learning rate to: {}".format(lr))
+                    # Loading the previous best model.
                     params = torch.load(model_save_path, map_location=lambda storage, loc: storage)
                     model.load_state_dict(params["state_dict"])
                     model.to(device)
-
+                    
                     optimizer.load_state_dict(torch.load(model_save_path + '.optim'))
 
                     for param_group in optimizer.param_groups:
