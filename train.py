@@ -58,7 +58,7 @@ def evaluate_ppl(model, valid_data, batch_size=32):
 
     # no_grad() signals backend to throw away all gradients
     with torch.no_grad():
-        for src_sents, tgt_sents in batch_iter(dev_data, batch_size):
+        for src_sents, tgt_sents in batch_iter(valid_data, batch_size):
             loss = -model(src_sents, tgt_sents).sum()
 
             cum_loss += float(loss)
@@ -111,8 +111,8 @@ def train(model, optimizer, train_data, valid_data, args):
         with torch.no_grad():
 
             # compute validation perplexity
-            dev_ppl = evaluate_ppl(model, valid_data, batch_size=128)
-            valid_metric = -dev_ppl
+            valid_ppl = evaluate_ppl(model, valid_data, batch_size=128)
+            valid_metric = -valid_ppl
 
             is_better = len(hist_valid_scores) == 0 or valid_metric > max(hist_valid_scores)
             hist_valid_scores.append(valid_metric)
@@ -220,13 +220,13 @@ def main():
         json.dump(args, f, indent=4)
 
     tr_train_dataset_fn, en_train_dataset_fn = args["train_data"]
-    tr_dev_dataset_fn, en_dev_dataset_fn = args["valid_data"]
+    tr_valid_dataset_fn, en_valid_dataset_fn = args["valid_data"]
 
     tr_train_data = read_text(tr_train_dataset_fn)
     en_train_data = read_text(en_train_dataset_fn)
 
-    tr_valid_data = read_text(tr_dev_dataset_fn)
-    en_valid_data = read_text(en_dev_dataset_fn)
+    tr_valid_data = read_text(tr_valid_dataset_fn)
+    en_valid_data = read_text(en_valid_dataset_fn)
 
     logger.info("Total train sentences: {}".format(len(tr_train_data)))
     logger.info("Total valid sentences: {}".format(len(tr_valid_data)))
